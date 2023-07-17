@@ -1,0 +1,11 @@
+<html>
+<head>
+<!-- this is comment
+-->
+<title>Demo 1</title>
+</head>
+<body>
+<b>this is bold tag (<b>) for bold text</b>
+<p>this is paragraph tag (<p>) for paragraph text</p>
+</body>
+</html>
