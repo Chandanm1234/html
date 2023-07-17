@@ -5,7 +5,9 @@
 <title>Demo 1</title>
 </head>
 <body>
-<b>this is bold tag (<b>) for bold text</b>
-<p>this is paragraph tag (<p>) for paragraph text</p>
+<b>this is bold tag for bold text</b>
+<p>this is paragraph tag for paragraph text
+we can add multiple lines 
+to make a paragraph like look</p>
 </body>
 </html>
