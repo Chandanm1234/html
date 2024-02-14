@@ -1,0 +1,165 @@
+<?php
+session_start();
+
+// Function to add task
+function addTask($task) {
+    $_SESSION['tasks'][] = $task;
+}
+
+// Function to delete task
+function deleteTask($index) {
+    if (isset($_SESSION['tasks'][$index])) {
+        unset($_SESSION['tasks'][$index]);
+    }
+}
+
+// Function to display tasks
+function displayTasks() {
+    if (isset($_SESSION['tasks'])) {
+        foreach ($_SESSION['tasks'] as $index => $task) {
+            echo "<li>$task <button onclick='deleteTask($index)'>Delete</button></li>";
+        }
+    }
+}
+
+// Function to validate username and password
+function validateCredentials($username, $password) {
+    return ($username === 'admin' && $password === '1234');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    if (validateCredentials($username, $password)) {
+        $_SESSION['authenticated'] = true;
+    } else {
+        $error = "Invalid username or password!";
+    }
+}
+
+// Check if user is authenticated
+$authenticated = isset($_SESSION['authenticated']) && $_SESSION['authenticated'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Task List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        #task-list {
+            margin-top: 20px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamic Task List</h1>
+        <?php if (!$authenticated): ?>
+            <form method="POST">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <button type="submit">Login</button>
+                <?php if (isset($error)): ?>
+                    <p class="error"><?php echo $error; ?></p>
+                <?php endif; ?>
+            </form>
+        <?php else: ?>
+            <form method="POST">
+                <div class="input-group">
+                    <input type="text" name="task" id="task-input" placeholder="Enter a task">
+                </div>
+                <button type="submit" onclick="addTask(event)">Add Task</button>
+            </form>
+            <ul id="task-list" class="fade-in" onmousemove="showCoordinates(event)">
+                <?php displayTasks(); ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+
+    <script>
+        // Function to show mouse cursor coordinates
+        function showCoordinates(event) {
+            var x = event.clientX;
+            var y = event.clientY;
+            document.getElementById("task-list").setAttribute("data-coordinates", "X: " + x + ", Y: " + y);
+        }
+
+        // Function to add task
+        function addTask(event) {
+            event.preventDefault();
+            var taskInput = document.getElementById('task-input');
+            var taskList = document.getElementById('task-list');
+            var taskText = taskInput.value;
+
+            if (taskText.trim() !== '') {
+                // Create a new list item
+                var listItem = document.createElement('li');
+                listItem.textContent = taskText;
+
+                // Append the new item to the list
+                taskList.appendChild(listItem);
+
+                // Show success message
+                alert('Task added successfully!');
+
+                // Clear the input field
+                taskInput.value = '';
+            } else {
+                // Show error message
+                alert('Please enter a task!');
+            }
+        }
+    </script>
+</body>
+</html>
