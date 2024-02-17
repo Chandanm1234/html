@@ -2,6 +2,7 @@
 session_start();
 
 // Function to add task
+
 function addTask($task) {
     $_SESSION['tasks'][] = $task;
 }
